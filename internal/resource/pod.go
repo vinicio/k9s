@@ -192,7 +192,6 @@ func (*Pod) Header(ns string) Row {
 		"MEM",
 		"IP",
 		"NODE",
-		"QOS",
 		"AGE",
 	)
 }
@@ -218,24 +217,12 @@ func (r *Pod) Fields(ns string) Row {
 		ToMi(r.metrics.CurrentMEM),
 		i.Status.PodIP,
 		i.Spec.NodeName,
-		r.mapQOS(i.Status.QOSClass),
 		toAge(i.ObjectMeta.CreationTimestamp),
 	)
 }
 
 // ----------------------------------------------------------------------------
 // Helpers...
-
-func (*Pod) mapQOS(class v1.PodQOSClass) string {
-	switch class {
-	case v1.PodQOSGuaranteed:
-		return "GA"
-	case v1.PodQOSBurstable:
-		return "BU"
-	default:
-		return "BE"
-	}
-}
 
 func (r *Pod) statuses(ss []v1.ContainerStatus) (cr, ct, rc int) {
 	for _, c := range ss {
