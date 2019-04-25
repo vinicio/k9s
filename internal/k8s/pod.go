@@ -35,9 +35,12 @@ func (p *Pod) List(ns string) (Collection, error) {
 	if err != nil {
 		return nil, err
 	}
-	cc := make(Collection, len(rr.Items))
-	for i, r := range rr.Items {
-		cc[i] = r
+	cc := make(Collection, 0)
+	for _, r := range rr.Items {
+		if r.Status.Phase == v1.PodSucceeded {
+			continue
+		}
+		cc = append(cc, r)
 	}
 
 	return cc, nil
